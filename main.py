@@ -159,30 +159,49 @@ df = pd.read_csv('movies.csv')
 # * años con peliculas de mayor ganancia
 
 # Convertir la columna 'Gross' a tipo numérico
-df['Gross'] = df['Gross'].str.replace(',', '').astype(float)
+# df['Gross'] = df['Gross'].str.replace(',', '').astype(float)
 
-# Filtrar filas donde 'Released_Year' no sea válido
-df = df.dropna(subset=['Released_Year'])
+# # Filtrar filas donde 'Released_Year' no sea válido
+# df = df.dropna(subset=['Released_Year'])
 
+# # Convertir la columna 'Released_Year' a tipo entero después de la extracción
+# df['Released_Year'] = df['Released_Year'].str.extract('(\d{4})').astype(float).astype(pd.Int64Dtype())
+
+# # Filtrar filas donde 'Released_Year' no sea válido después de la conversión
+# df = df.dropna(subset=['Released_Year'])
+
+# # Agrupar por año y calcular la ganancia total
+# yearly_gross = df.groupby('Released_Year')['Gross'].sum().sort_values(ascending=False).head(10)
+
+# # Ordenar los años de mayor a menor
+# yearly_gross = yearly_gross.sort_index(ascending=True)
+
+# # Crear el gráfico con Seaborn
+# plt.figure(figsize=(10, 6))
+# sns.barplot(x=yearly_gross.values, y=yearly_gross.index, palette='viridis', orient='h')
+# plt.xlabel('Ganancia Total (en millones)')
+# plt.ylabel('Año')
+# plt.title('Top 10 Años con Mayor Ganancia de Películas')
+
+# * Top 10 años con mayor cantidad de peliculas
 # Convertir la columna 'Released_Year' a tipo entero después de la extracción
 df['Released_Year'] = df['Released_Year'].str.extract('(\d{4})').astype(float).astype(pd.Int64Dtype())
 
 # Filtrar filas donde 'Released_Year' no sea válido después de la conversión
 df = df.dropna(subset=['Released_Year'])
 
-# Agrupar por año y calcular la ganancia total
-yearly_gross = df.groupby('Released_Year')['Gross'].sum().sort_values(ascending=False).head(10)
+# Contar la cantidad de películas por año y seleccionar los 10 años con mayor cantidad de películas
+top_years = df['Released_Year'].value_counts().head(10)
 
-# Ordenar los años de mayor a menor
-yearly_gross = yearly_gross.sort_index(ascending=True)
-
-# Crear el gráfico con Seaborn
+# Crear el gráfico de barras
 plt.figure(figsize=(10, 6))
-sns.barplot(x=yearly_gross.values, y=yearly_gross.index, palette='viridis', orient='h')
-plt.xlabel('Ganancia Total (en millones)')
-plt.ylabel('Año')
-plt.title('Top 10 Años con Mayor Ganancia de Películas')
+top_years.plot(kind='bar', color='skyblue')
+plt.xlabel('Año de Lanzamiento')
+plt.ylabel('Cantidad de Películas')
+plt.title('Top 10 Años con Mayor Cantidad de Películas')
+plt.xticks(rotation=45)
+plt.tight_layout()
 
-plt.savefig('top_años_ganancia.png', bbox_inches='tight')
+plt.savefig('top_años_cantidad_peliculas.png', bbox_inches='tight')
 
 plt.show()
